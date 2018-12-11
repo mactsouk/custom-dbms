@@ -1,63 +1,36 @@
 version: v1.0
-name: First pipeline example
+name: Install different versions MySQL + PostgreSQL
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
 
 blocks:
-  - name: "Build"
+  - nawe: MySQL
     task:
-      env_vars:
-        - name: APP_ENV
-          value: prod
       jobs:
-      - name: Docker build
+      - name: Install MySQL 5.7.23
         commands:
           - checkout
-          - ls -1
-          - echo $APP_ENV
-          - echo "Docker build..."
-          - echo "done"
+          - mysql --version
+          - sudo apt-get remove -y --purge mysql-client
+          - sudo apt-get remove -y --purge mysql-server
+          - sudo apt-get remove -y --purge mysql-common
+          - sudo apt -y autoremove
+          - wget https://downloads.mysql.com/archives/get/file/mysql-server_5.7.23-1ubuntu18.04_amd64.deb-bundle.tar
+          - mkdir mysql
+          - cd mysql
+          - tar xvf ../mysql-server_5.7.23-1ubuntu18.04_amd64.deb-bundle.tar
+          - yes | sudo apt install libaio1 libmecab2
+          - sudo dpkg -i *.deb
+          - mysqld --version
+          - mysql --version
 
-  - name: "Smoke tests"
+  - name: PostgreSQL
     task:
       jobs:
-      - name: Smoke
+      - name: Install PostgreSQL
         commands:
           - checkout
           - echo "make smoke"
 
-  - name: "Unit tests"
-    task:
-      jobs:
-      - name: RSpec
-        commands:
-          - checkout
-          - echo "make rspec"
-
-      - name: Lint code
-        commands:
-          - checkout
-          - echo "make lint"
-
-      - name: Check security
-        commands:
-          - checkout
-          - echo "make security"
-
-  - name: "Integration tests"
-    task:
-      jobs:
-      - name: Cucumber
-        commands:
-          - checkout
-          - echo "make cucumber"
-
-  - name: "Push Image"
-    task:
-      jobs:
-      - name: Push
-        commands:
-          - checkout
-          - echo "make docker.push"

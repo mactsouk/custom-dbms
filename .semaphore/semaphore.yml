@@ -22,7 +22,7 @@ blocks:
           - cd mysql
           - tar xvf ../mysql-server_5.7.23-1ubuntu18.04_amd64.deb-bundle.tar
           - yes | sudo apt install libaio1 libmecab2
-          - sudo dpkg -i *.deb
+          - sudo apt-get install -yq ./*.deb
           - mysqld --version
           - mysql --version
 

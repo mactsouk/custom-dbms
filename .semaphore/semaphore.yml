@@ -22,7 +22,9 @@ blocks:
           - cd mysql
           - tar xvf ../mysql-server_5.7.23-1ubuntu18.04_amd64.deb-bundle.tar
           - yes | sudo apt install libaio1 libmecab2
-          - sudo apt-get install -yq ./*.deb
+          - sudo debconf-set-selections <<< 'mysql-community-server mysql-community-server/root-pass password your_password'
+          - sudo debconf-set-selections <<< 'mysql-community-server mysql-community-server/re-root-pass password your_password'
+          - sudo apt-get -q install -y ./*.deb
           - mysqld --version
           - mysql --version
 
